@@ -7,79 +7,39 @@
 <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/prop-types@15.7.2/prop-types.js"></script>
 <script type='text/babel'>
-  function MinutesToHours() {
-    const [amount, setAmount] = React.useState(0);
-    const [inverted, setInverted] = React.useState(false);
-    const onChange = (event) => {
-      setAmount(event.target.value);
-    }
-
-    const reset = () => setAmount(0);
-    const onInvert = () => {
-      reset();
-      setInverted((current) => !current);
-    };
+   // prop에 default value를 설정할 수 있다.
+  function Btn({ text, fontSize = 16 }) {
     return (
-    <div>
-      <div>
-        <label htmlFor="minutes">Minutes</label>
-        <input value = {inverted ? amount * 60 : amount} id="minutes" placeholder="Minutes" type="number" onChange={onChange} disabled={inverted}/>
-      </div>
-      <div>
-        <label htmlFor="hours">Hours</label>
-        <input className = "hour" value = {inverted ? amount : Math.round(amount / 60)} id="hours" placeholder="Hours" type="number" disabled={!inverted} onChange={onChange}/>
-      </div>
-      <button onClick={reset}>Reset</button>
-      <button onClick={onInvert}>{inverted ? "Turn back" : "Invert"}</button>
-    </div>
+      <button
+      style={{
+        backgroundColor: "tomato",
+        color: "white",
+        padding: "10px 20px",
+        borderRadius: 10,
+        border: 0,
+        fontSize: fontSize,
+    }}
+    >
+    {text}
+    </button>
     );
   }
-  function KmToMiles() {
-    const [amount, setAmount] = React.useState(0);
-    const [inverted, setInverted] = React.useState(false);
-
-    const reset = () => setAmount(0);
-    const onInvert = () => {
-      reset();
-      setInverted((current) => !current);
-    }
-    const onChange = (event) => {
-      setAmount(event.target.value);
-    }
-
-    return (
-    <div>
-      <div>
-        <label htmlFor="km">Km</label>
-        <input className="km" value={inverted ? amount * 1.609 : amount}id="km" placeholder="Km" type="number" onChange={onChange} disabled = {inverted}/>
-      </div>
-      <div>
-        <label htmlFor="miles">Miles</label>
-        <input value={inverted ? amount : amount / 1.609 }id="miles" placeholder="Miles" type="number" onChange={onChange} disabled = {!inverted}/>
-      </div>
-      <button onClick={reset}>Reset</button>
-      <button onClick={onInvert}>{inverted ? "Turn back" : "Invert"} </button>
-    </div>
-    );
+  //isRequired를 쓰면 반드시 써야하고 안 쓰면 optional이다.
+  Btn.propTypes = {
+    text: PropTypes.string.isRequired,
+    fontSize: PropTypes.number
   }
   function App() {
-    const [index, setIndex] = React.useState("xx")
-    const onSelect = (event) => {
-      setIndex(event.target.value)
-    }
     return (
+    // 부모가 어떤 State라도 변경이 있다면 자식은 Re-rendered가 되는데 이게 추후에 앱이 느려지는 원인이 된다.
+    // 여기서 onclick은 이벤트 리스너가 아니고 하나의 prop이다.
+    // Btn에 들어가는 것이고 button 태그를 위한 이벤트리스너가 아니야
+    // Text, boolean말고 함수도 보낼 수 있다.
     <div>
-      <h1>Super Converter</h1>
-      <select value={index} onChange={onSelect}>
-          <option value="xx">Select your units</option>
-          <option value="0">Minutes & Hours</option>
-          <option value="1">Km & Miles</option>
-      </select>
-      <hr />
-      {index === "xx" ? "Please select your units" : null}
-      {index === "0" ? <MinutesToHours /> : null}
-      {index === "1" ? <KmToMiles /> : null}
+      <Btn text="Save Changes" fontSize={18}/>
+      <Btn text={"Continue"}/>
     </div>
     );
   }
